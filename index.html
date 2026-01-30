@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrlaLock - Lockers para Praias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Tela de Cadastro/Login -->
+    <section id="auth" class="page active">
+        <div class="auth-container">
+            <div class="logo-auth">
+                <img src="images/logo.png" alt="OrlaLock" class="logo-image">
+                <h1>OrlaLock</h1>
+                <p>Lockers inteligentes para praias</p>
+            </div>
+
+            <!-- Login -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Entrar</h2>
+                <div class="form-group">
+                    <label for="loginCPF"><i class="fas fa-id-card"></i> CPF</label>
+                    <input type="text" id="loginCPF" placeholder="000.000.000-00" maxlength="14" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Senha/PIN</label>
+                    <input type="password" id="loginPassword" placeholder="Digite sua senha" maxlength="6" required>
+                </div>
+                <button onclick="login()" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+                <p class="auth-switch">
+                    Não tem uma conta? 
+                    <a href="#" onclick="showRegister()">Cadastre-se</a>
+                </p>
+            </div>
+
+            <!-- Cadastro -->
+            <div id="registerForm" class="auth-form">
+                <h2>Cadastrar</h2>
+                <div class="form-group">
+                    <label for="registerName"><i class="fas fa-user"></i> Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerCPF"><i class="fas fa-id-card"></i> CPF</label>
+                    <input type="text" id="registerCPF" placeholder="000.000.000-00" maxlength="14" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPhone"><i class="fas fa-phone"></i> Telefone</label>
+                    <input type="text" id="registerPhone" placeholder="(00) 00000-0000" maxlength="15" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword"><i class="fas fa-lock"></i> Senha (4-6 dígitos)</label>
+                    <input type="password" id="registerPassword" placeholder="Crie uma senha" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword"><i class="fas fa-lock"></i> Confirmar Senha</label>
+                    <input type="password" id="registerConfirmPassword" placeholder="Repita a senha" maxlength="6" required>
+                </div>
+                <button onclick="register()" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Cadastrar
+                </button>
+                <p class="auth-switch">
+                    Já tem uma conta? 
+                    <a href="#" onclick="showLogin()">Entrar</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Header EXISTENTE -->
+    <header class="header">
+        <div class="container">
+            <img src="images/logo.png" alt="OrlaLock" class="logo-image">
+            <nav class="nav">
+                <button class="nav-btn active" onclick="showPage('map')">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Mapa
+                </button>
+                <button class="nav-btn" onclick="showPage('reserve')">
+                    <i class="fas fa-calendar-plus"></i>
+                    Reservar
+                </button>
+                <button class="nav-btn" onclick="showPage('mylocker')">
+                    <i class="fas fa-lock"></i>
+                    Meu Locker
+                </button>
+                <button class="nav-btn" onclick="showPage('profile')">
+                    <i class="fas fa-user"></i>
+                    Perfil
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Map Page -->
+        <section id="map" class="page">
+            <div class="container">
+                <h2>Mapa de Lockers - Praia de Copacabana</h2>
+                <div class="map-container">
+                    <div class="beach-map">
+                        <div class="beach-area">
+                            <h3>Posto 5 - Copacabana</h3>
+                            <div id="lockersGrid" class="lockers-grid"></div>
+                        </div>
+                    </div>
+                    <div class="map-legend">
+                        <div class="legend-item">
+                            <div class="legend-color available"></div>
+                            <span>Livre</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color occupied"></div>
+                            <span>Ocupado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color reserved"></div>
+                            <span>Reservado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reserve Page -->
+        <section id="reserve" class="page">
+            <div class="container">
+                <h2>Reservar Locker</h2>
+                <div class="reserve-container">
+                    <div class="reserve-section">
+                        <h3>Locker Selecionado</h3>
+                        <div id="selectedLocker" class="selected-locker">Nenhum locker selecionado</div>
+                    </div>
+                    
+                    <div class="reserve-section">
+                        <h3>Tempo de Reserva</h3>
+                        <div class="time-options">
+                            <button class="time-btn" onclick="selectTime(15, 5)">
+                                <div class="time-duration">15 min</div>
+                                <div class="time-price">R$ 5,00</div>
+                            </button>
+                            <button class="time-btn" onclick="selectTime(30, 8)">
+                                <div class="time-duration">30 min</div>
+                                <div class="time-price">R$ 8,00</div>
+                            </button>
+                            <button class="time-btn" onclick="selectTime(60, 15)">
+                                <div class="time-duration">1 hora</div>
+                                <div class="time-price">R$ 15,00</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="reserve-section">
+                        <h3>Forma de Pagamento</h3>
+                        <div class="payment-option">
+                            <i class="fab fa-pix"></i>
+                            <span>Pix</span>
+                        </div>
+                    </div>
+
+                    <div class="reserve-summary">
+                        <h3>Resumo da Reserva</h3>
+                        <div id="reservationSummary">
+                            <p>Locker: <span id="summaryLocker">-</span></p>
+                            <p>Tempo: <span id="summaryTime">-</span></p>
+                            <p>Preço: <span id="summaryPrice">-</span></p>
+                        </div>
+                        <button id="confirmBtn" class="btn-primary" disabled onclick="confirmReservation()">
+                            <i class="fas fa-check"></i> Confirmar Reserva
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Locker Page -->
+        <section id="mylocker" class="page">
+            <div class="container">
+                <h2>Meu Locker</h2>
+                <div id="myLockerContent" class="mylocker-container">
+                    <div class="no-active-locker">
+                        <i class="fas fa-lock"></i>
+                        <p>Você não tem nenhum locker ativo no momento.</p>
+                        <button class="btn-primary" onclick="showPage('reserve')">
+                            <i class="fas fa-plus"></i> Reservar Locker
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="profile" class="page">
+            <div class="container">
+                <h2>Meu Perfil</h2>
+                <div class="profile-container">
+                    <div class="profile-section">
+                        <h3>Saldo</h3>
+                        <div class="balance-display">
+                            <i class="fas fa-wallet"></i>
+                            <span id="userBalance">R$ 0,00</span>
+                        </div>
+                        <button class="btn-secondary" onclick="addBalance()">
+                            <i class="fas fa-plus"></i> Adicionar Saldo
+                        </button>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Configurações</h3>
+                        <div class="profile-options">
+                            <button class="profile-btn" onclick="showFavorites()">
+                                <i class="fas fa-heart"></i> Favoritos
+                            </button>
+                            <button class="profile-btn" onclick="showHistory()">
+                                <i class="fas fa-history"></i> Histórico
+                            </button>
+                            <button class="profile-btn" onclick="showSettings()">
+                                <i class="fas fa-cog"></i> Configurações
+                            </button>
+                            <button class="profile-btn" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="qrModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeQR()">&times;</span>
+            <h3>QR Code do Locker</h3>
+            <div id="qrcode"></div>
+            <p>Aponte seu celular para o QR code para abrir o locker</p>
+        </div>
+    </div>
+
+    <div id="pixModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePix()">&times;</span>
+            <h3>Pagamento via Pix</h3>
+            <div class="pix-content">
+                <div class="pix-code">
+                    <p>Chave Pix: orlalock@exemplo.com</p>
+                    <button class="btn-secondary" onclick="copyPixCode()">
+                        <i class="fas fa-copy"></i> Copiar Código
+                    </button>
+                </div>
+                <div class="pix-amount">
+                    <p>Valor: <span id="pixAmount">R$ 0,00</span></p>
+                </div>
+                <button class="btn-primary" onclick="simulatePixPayment()">
+                    <i class="fas fa-check"></i> Simular Pagamento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
